@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:jee="http://www.springframework.org/schema/jee"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd">
+
+    <beans profile="local, server, test">
+        <context:annotation-config/>
+
+        <context:component-scan base-package="es.ahs.oracle_task.repository"/>
+
+    </beans>
+
+    <beans profile="server">
+        <jee:jndi-lookup id="dataSource" jndi-name="${database.jndi}" proxy-interface="javax.sql.DataSource"/>
+    </beans>
+
+    <beans profile="local, test">
+        <bean id="dataSource"
+              class="oracle.jdbc.pool.OracleDataSource"
+              p:URL="jdbc:oracle:thin:@localhost:1521:oracledb"
+              p:user="${database.username}"
+              p:password="${database.password}"
+        />
+    </beans>
+
+    <beans profile="local, server, test">
+        <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+            <property name="dataSource" ref="dataSource"/>
+            <property name="packagesToScan" value="es.ahs.oracle_task.model"/>
+            <property name="jpaVendorAdapter" ref="vendorAdapter"/>
+            <property name="jpaProperties">
+                <props>
+                    <prop key="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</prop>
+                </props>
+            </property>
+        </bean>
+        <bean id="vendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+            <property name="generateDdl" value="true"/>
+            <property name="showSql" value="true"/>
+            <property name="databasePlatform" value="org.hibernate.dialect.Oracle10gDialect"/>
+        </bean>
+    </beans>
+
+    <beans profile="local, server, test">
+        <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"
+              p:entityManagerFactory-ref="entityManagerFactory"/>
+        <tx:annotation-driven transaction-manager="transactionManager"/>
+    </beans>
+</beans>

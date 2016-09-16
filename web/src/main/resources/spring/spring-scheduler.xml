@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/task
+        http://www.springframework.org/schema/task/spring-task-4.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:component-scan base-package="es.ahs.oracle_task.service.scheduler" />
+
+    <task:scheduled-tasks scheduler="SchedulerOne">
+        <task:scheduled ref="Scheduler" method="showAlive" cron = "0 0 * * * ?"/>
+        <!-- получяем данные о погоде, каждый день в 5:05, 11:05, 17:05, 23:05 -->
+        <task:scheduled ref="Scheduler" method="getFreshWeather" cron = "${getweather.time}"/>
+        <!-- рассылка данных на почту, каждый день в 1:30 -->
+        <task:scheduled ref="Scheduler" method="sendMails" cron="${sendmail.time}"/>
+    </task:scheduled-tasks>
+
+    <task:scheduler id="SchedulerOne"/>
+</beans>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="cities" type="citiesType"/>
+    <xs:complexType name="cityType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute type="xs:string" name="id" use="optional"/>
+                <xs:attribute type="xs:string" name="region" use="optional"/>
+                <xs:attribute type="xs:string" name="head" use="optional"/>
+                <xs:attribute type="xs:string" name="type" use="optional"/>
+                <xs:attribute type="xs:string" name="country" use="optional"/>
+                <xs:attribute type="xs:string" name="partOfTerritory" use="optional"/>
+                <xs:attribute type="xs:string" name="resort" use="optional"/>
+                <xs:attribute type="xs:string" name="climate" use="optional"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="citiesType">
+        <xs:sequence>
+            <xs:element type="countryType" name="country" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="countryType">
+        <xs:sequence>
+            <xs:element type="cityType" name="city" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute type="xs:string" name="name" use="optional"/>
+    </xs:complexType>
+</xs:schema>
